@@ -1,0 +1,7 @@
+server:
+  port: 8083
+
+external:
+  api:
+    base-url: https://api.tempo.io
+    token: Yf8asoccr9eqtEbXJOaYgtQNJwzzHK-us
