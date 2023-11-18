@@ -3,6 +3,8 @@ package com.tempo.worklogs;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 public class WorklogResponse {
 	public class Attributes{
 	    public String self;
@@ -26,8 +28,12 @@ public class WorklogResponse {
 	    public int offset;
 	    public String previous;
 	}
-
-	public class Result{
+	
+	public static class Result{
+		public Result() {
+            // Initialize default values or leave them as null/0
+        }
+		
 	    public Attributes attributes;
 	    public Author author;
 	    public int billableSeconds;
@@ -40,6 +46,24 @@ public class WorklogResponse {
 	    public int tempoWorklogId;
 	    public int timeSpentSeconds;
 	    public Date updatedAt;
+	    @Override
+	    public String toString() {
+	        return "Result{" +
+	                "attributes=" + attributes +
+	                ", author=" + author +
+	                ", billableSeconds=" + billableSeconds +
+	                ", createdAt=" + createdAt +
+	                ", description='" + description + '\'' +
+	                ", issue=" + issue +
+	                ", self='" + self + '\'' +
+	                ", startDate='" + startDate + '\'' +
+	                ", startTime='" + startTime + '\'' +
+	                ", tempoWorklogId=" + tempoWorklogId +
+	                ", timeSpentSeconds=" + timeSpentSeconds +
+	                ", updatedAt=" + updatedAt +
+	                '}';
+	    }
+	    
 	}
 
 	public class Root{
