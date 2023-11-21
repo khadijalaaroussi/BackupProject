@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tempo.worklogs.service.ExternalApiService;
 
-import reactor.core.publisher.Mono;
-
 @RestController
 @RequestMapping("/api")
 public class ApiController {

@@ -1,0 +1,11 @@
+com/tempo/worklogs/WorklogsApplication.class
+com/tempo/worklogs/WorklogResponse$Attributes.class
+com/tempo/worklogs/WorklogResponse$Issue.class
+com/tempo/worklogs/WorklogResponse$Metadata.class
+com/tempo/worklogs/service/ExternalApiService.class
+com/tempo/worklogs/WorklogResponse.class
+com/tempo/worklogs/controller/ApiController.class
+com/tempo/worklogs/WorklogResponse$Root.class
+com/tempo/worklogs/WorklogResponse$Result.class
+com/tempo/worklogs/WorklogResponse$Value.class
+com/tempo/worklogs/WorklogResponse$Author.class

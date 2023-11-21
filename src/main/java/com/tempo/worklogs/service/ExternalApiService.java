@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tempo.worklogs.WorklogResponse;
-import com.tempo.worklogs.WorklogResponse.Result;
-
-import reactor.core.publisher.Mono;
+import com.tempo.worklogs.domain.WorklogResponse;
 
 @Service
 public class ExternalApiService {
@@ -29,7 +26,6 @@ public class ExternalApiService {
     }
 
     public  void fetchAndLogWorklogsFromTempo() {
-    	 WorklogResponse worklogResponse = new WorklogResponse();
        webClient.get()
             .uri("https://api.tempo.io/4/worklogs")
             .header(HttpHeaders.AUTHORIZATION,"Bearer " + token)
@@ -38,7 +34,7 @@ public class ExternalApiService {
             .doOnNext(response -> {
                 try {
                 	
-                	WorklogResponse.Result result  = objectMapper.readValue(response, Result.class);
+                	WorklogResponse result  = objectMapper.readValue(response, WorklogResponse.class);
                     // Log the parsed response or perform operations as needed
                     
                 	 
