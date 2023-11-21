@@ -46,7 +46,7 @@ public class ExternalApiService {
                           System.out.println(result.toString());
                 	
                 	
-                	System.out.println(result); // Example: Printing the response
+                	 // Example: Printing the response
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
