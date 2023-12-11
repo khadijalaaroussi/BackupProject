@@ -20,6 +20,6 @@ public class ApiController {
 
     @GetMapping("/worklogs")
     public void getWorklogsFromExternalAPI() {
-        externalApiService.fetchAndLogWorklogsFromTempo();
+        externalApiService.getAllWorklogs();
     }
 }
