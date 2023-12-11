@@ -23,6 +23,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class ExternalApiService {
+	
 	@Value("${external.api.base-url}")
     private String baseUrl;
 
@@ -39,7 +40,7 @@ public class ExternalApiService {
     }
     public void getAllWorklogs() {
         List<Result> allWorklogs = new ArrayList<>();
-        int limit = 50;
+        int limit = 5000;
         int offset = 0;
 
         RestTemplate restTemplate = new RestTemplate();
