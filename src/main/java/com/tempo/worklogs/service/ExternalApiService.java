@@ -182,7 +182,7 @@ private void writeToExcel(List<Result> worklogs, String excelFileName) {
 
         // Headers
         Row headerRow = sheet.createRow(rowNum++);
-        String[] headers = {"tempoWorklogId", "issue", "timeSpentSeconds", "billableSeconds", "startDate", "startTime", "description", "createdAt", "updatedAt"};
+        String[] headers = {"self","tempoWorklogId", "issue", "timeSpentSeconds", "billableSeconds", "startDate", "startTime", "description", "createdAt", "updatedAt","author","attributes"};
         for (int i = 0; i < headers.length; i++) {
             headerRow.createCell(i).setCellValue(headers[i]);
         }
@@ -190,15 +190,18 @@ private void writeToExcel(List<Result> worklogs, String excelFileName) {
         // Worklog data
         for (Result worklog : worklogs) {
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(worklog.getTempoWorklogId());
-            row.createCell(1).setCellValue(worklog.getIssue().toString());
-            row.createCell(2).setCellValue(worklog.getTimeSpentSeconds());
-            row.createCell(3).setCellValue(worklog.getBillableSeconds());
-            row.createCell(4).setCellValue(worklog.getStartDate());
-            row.createCell(5).setCellValue(worklog.getStartTime());
-            row.createCell(6).setCellValue(worklog.getDescription());
-            row.createCell(7).setCellValue(worklog.getCreatedAt());
-            row.createCell(8).setCellValue(worklog.getUpdatedAt());
+            row.createCell(0).setCellValue(worklog.getSelf());
+            row.createCell(1).setCellValue(worklog.getTempoWorklogId());
+            row.createCell(2).setCellValue(worklog.getIssue().toString());
+            row.createCell(3).setCellValue(worklog.getTimeSpentSeconds());
+            row.createCell(4).setCellValue(worklog.getBillableSeconds());
+            row.createCell(5).setCellValue(worklog.getStartDate());
+            row.createCell(6).setCellValue(worklog.getStartTime());
+            row.createCell(7).setCellValue(worklog.getDescription());
+            row.createCell(8).setCellValue(worklog.getCreatedAt());
+            row.createCell(9).setCellValue(worklog.getUpdatedAt());
+            row.createCell(10).setCellValue(worklog.getAuthor().toString());
+            row.createCell(11).setCellValue(worklog.getAttributes().toString());
             // Add other cell values for the remaining attributes of the worklog
         }
 
