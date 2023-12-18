@@ -7,6 +7,18 @@ public class Issue {
     public String toString() {
         return "Issue [self=" + self + ", id=" + id + "]";
     }
+	public String getSelf() {
+		return self;
+	}
+	public void setSelf(String self) {
+		this.self = self;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 
 
 }
