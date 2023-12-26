@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +43,8 @@ public class ExternalApiService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper; // Jackson ObjectMapper
 
+    @Value("${tempo.api.path}")
+    private String TEMPO_Path;
     // Other properties...
 
     public ExternalApiService(ObjectMapper objectMapper) {
@@ -49,25 +52,24 @@ public class ExternalApiService {
         this.objectMapper = objectMapper;
     }
     public void getAllWorklogsAsExcel() {
-        List<Result> allWorklogs = getAllWorklogs(); // Update this method to fetch all worklogs
-        writeToExcel(allWorklogs, "all_worklogs.xlsx");
-    }
-    
-    
-    public void retrieveWorklogsBasedOnUserChoice() {
-        Scanner scanner = new Scanner(System.in);
+    	List<Result> allWorklogs = getAllWorklogs(); // Récupérer tous les worklogs
+        String allWorklogsFilePath = TEMPO_Path + File.separator + "all_worklogs.xlsx";
 
-        System.out.println("Voulez-vous récupérer tous les worklogs ? (Oui/Non)");
-        String userChoice = scanner.nextLine();
-
-        if ("Oui".equalsIgnoreCase(userChoice)) {
-        	getAllWorklogsAsExcel();
-        } else if ("Non".equalsIgnoreCase(userChoice)) {
-            retrieveMonthlyWorklogs();
-        } else {
-            System.out.println("Réponse non valide. Veuillez saisir 'Oui' ou 'Non'.");
+        // Vérifier si le dossier existe, sinon le créer
+        File directory = new File(TEMPO_Path);
+        if (!directory.exists()) {
+            if (directory.mkdirs()) {
+                System.out.println("Folder created: " + directory.getAbsolutePath());
+            } else {
+                System.err.println("Failed to create folder: " + directory.getAbsolutePath());
+                return;
+            }
         }
+
+        writeToExcel(allWorklogs, allWorklogsFilePath);
     }
+    
+    
     public void retrieveMonthlyWorklogs() {
         // Récupération du mois courant
         YearMonth currentMonth = YearMonth.now();
@@ -76,7 +78,7 @@ public class ExternalApiService {
 
         // Utilisation de la méthode getWorklogsForDateRange() pour récupérer les worklogs du mois courant
         List<Result> monthlyWorklogs = getWorklogsForDateRange(startOfMonth, endOfMonth);
-        writeToExcel(monthlyWorklogs, "monthly_worklogs_" + currentMonth.getMonth().toString() + ".xlsx");
+        writeToExcel(monthlyWorklogs, TEMPO_Path + File.separator + "monthly_worklogs_" + currentMonth.getMonth().toString() + ".xlsx");
        /* try {
             File outputFile = new File("monthly_worklogs.json");
             objectMapper.writeValue(outputFile, monthlyWorklogs);
@@ -133,45 +135,42 @@ public class ExternalApiService {
 
 
 
-public List<Result> getWorklogsForDateRange(LocalDate startDate, LocalDate endDate) {
-    List<Result> worklogsForDateRange = new ArrayList<>();
-    int limit = 5000;
-    int offset = 0;
+    public List<Result> getWorklogsForDateRange(LocalDate startDate, LocalDate endDate) {
+        List<Result> worklogsForDateRange = new ArrayList<>();
+        int limit = 5000;
+        int offset = 0;
 
-    RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    while (true) {
-        String url = "https://api.tempo.io/4/worklogs?limit=" + limit + "&offset=" + offset;
+        while (true) {
+            String url = "https://api.tempo.io/4/worklogs?limit=" + limit + "&offset=" + offset +
+                         "&from=" + startDate.format(formatter) + "&to=" + endDate.format(formatter);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + token);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<WorklogResponse> response = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            entity,
-            WorklogResponse.class
-        );
+            ResponseEntity<WorklogResponse> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                WorklogResponse.class
+            );
 
-        WorklogResponse worklogResponse = response.getBody();
-        if (worklogResponse != null && worklogResponse.getResults() != null && !worklogResponse.getResults().isEmpty()) {
-            for (Result result : worklogResponse.getResults()) {
-                LocalDate worklogDate = LocalDate.parse(result.getStartDate());
-                if (!worklogDate.isBefore(startDate) && !worklogDate.isAfter(endDate)) {
+            WorklogResponse worklogResponse = response.getBody();
+            if (worklogResponse != null && worklogResponse.getResults() != null && !worklogResponse.getResults().isEmpty()) {
+                for (Result result : worklogResponse.getResults()) {
                     worklogsForDateRange.add(result);
                 }
+                offset += limit;
+            } else {
+                break;
             }
-            offset += limit;
-        } else {
-            break;
         }
+
+        return worklogsForDateRange;
     }
-
-    return worklogsForDateRange;
-}
-
-
 
 //Existing imports and class definition...
 
@@ -182,7 +181,7 @@ private void writeToExcel(List<Result> worklogs, String excelFileName) {
 
         // Headers
         Row headerRow = sheet.createRow(rowNum++);
-        String[] headers = {"self","tempoWorklogId", "issue", "timeSpentSeconds", "billableSeconds", "startDate", "startTime", "description", "createdAt", "updatedAt","author","attributes"};
+        String[] headers = {"self","tempoWorklogId", "issue", "timeSpentSeconds", "billableSeconds", "startDate", "startTime", "description", "createdAt", "updatedAt","author"};
         for (int i = 0; i < headers.length; i++) {
             headerRow.createCell(i).setCellValue(headers[i]);
         }
@@ -201,7 +200,7 @@ private void writeToExcel(List<Result> worklogs, String excelFileName) {
             row.createCell(8).setCellValue(worklog.getCreatedAt());
             row.createCell(9).setCellValue(worklog.getUpdatedAt());
             row.createCell(10).setCellValue(worklog.getAuthor().toString());
-            row.createCell(11).setCellValue(worklog.getAttributes().toString());
+           
             // Add other cell values for the remaining attributes of the worklog
         }
 

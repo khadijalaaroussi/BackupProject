@@ -4,4 +4,11 @@ server:
 external:
   api:
     base-url: https://api.tempo.io/4
+    
     token: 3uNYO2kgpQ8HBKwNVgt0BYP5jV0FtK-us
+tempo:
+    api:
+      url: https://api.tempo.io/4/teams
+      token: 3uNYO2kgpQ8HBKwNVgt0BYP5jV0FtK-us
+      cron: "0 37 9 * * *"
+      path: C:\Backup_tempo
