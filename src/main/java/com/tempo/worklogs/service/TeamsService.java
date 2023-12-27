@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,11 +22,14 @@ import java.util.List;
 @Service
 public class TeamsService {
 	
-	    @Value("${tempo.api.url}")
+	    @Value("${tempo.api.url1}")
 	    private String TEMPO_TEAMS_URL;
 
 	    @Value("${tempo.api.token}")
 	    private String token;
+	    
+	    @Value("${tempo.api.path}")
+        private String TEMPO_Path;
 
 	    public Root retrieveRootFromTempoAPI() {
 	        HttpHeaders headers = new HttpHeaders();
@@ -58,6 +62,7 @@ public class TeamsService {
 	            if (root != null && root.results != null && !root.results.isEmpty()) {
 	                // Create Excel workbook and sheet
 	                try (Workbook workbook = new XSSFWorkbook()) {
+	                	 String outputFile = TEMPO_Path + File.separator + "TempoTeams.xlsx";
 	                    Sheet sheet = workbook.createSheet("Tempo Teams");
 
 	                    // Create header row
@@ -95,8 +100,9 @@ public class TeamsService {
 	                    }
 
 	                    // Write to file
-	                    try (FileOutputStream fileOut = new FileOutputStream("TempoTeams.xlsx")) {
+	                    try (FileOutputStream fileOut = new FileOutputStream(outputFile)) {
 	                        workbook.write(fileOut);
+	                        System.out.println("Fichier Excel créé avec succès à : " + outputFile);
 	                    }
 	                } catch (IOException e) {
 	                    e.printStackTrace();
