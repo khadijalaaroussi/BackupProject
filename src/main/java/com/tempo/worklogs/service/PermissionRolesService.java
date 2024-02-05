@@ -8,6 +8,9 @@ package com.tempo.worklogs.service;
 	import org.springframework.stereotype.Service;
 	import org.springframework.web.client.RestTemplate;
 
+import com.tempo.worklogs.DomainPermissionRoles.AccessEntity;
+import com.tempo.worklogs.DomainPermissionRoles.Permission;
+import com.tempo.worklogs.DomainPermissionRoles.PermittedUser;
 import com.tempo.worklogs.DomainPermissionRoles.Result;
 import com.tempo.worklogs.DomainPermissionRoles.Root;
 
@@ -59,7 +62,7 @@ import java.io.FileOutputStream;
 	    private void writeToExcel(List<Result> results,String outputFile) {
 	        Workbook workbook = new XSSFWorkbook();
 	        Sheet sheet = workbook.createSheet("Permission Roles");
-
+	        
 	        int rowNum = 0;
 	        Row headerRow = sheet.createRow(rowNum++);
 	        headerRow.createCell(0).setCellValue("ID");
@@ -67,9 +70,11 @@ import java.io.FileOutputStream;
 	        headerRow.createCell(2).setCellValue("Access Type");
 	        headerRow.createCell(3).setCellValue("Editable");
 	        headerRow.createCell(4).setCellValue("Self");
-	        headerRow.createCell(5).setCellValue("Access Entities");
-	        headerRow.createCell(6).setCellValue("Permissions");
-	        headerRow.createCell(7).setCellValue("Permitted Users");
+	        headerRow.createCell(5).setCellValue("Access Entity ID");
+	        headerRow.createCell(6).setCellValue("Access Entity Self");
+	        headerRow.createCell(7).setCellValue("Permission Key");
+	        headerRow.createCell(8).setCellValue("Permitted User Account ID");
+	        headerRow.createCell(9).setCellValue("Permitted User Self");
 	        // Add more headers as needed for other fields
 
 	        for (Result result : results) {
@@ -79,11 +84,38 @@ import java.io.FileOutputStream;
 	            row.createCell(2).setCellValue(result.accessType);
 	            row.createCell(3).setCellValue(result.editable);
 	            row.createCell(4).setCellValue(result.self);
-	            row.createCell(5).setCellValue(result.accessEntities.toString());
-	            row.createCell(6).setCellValue(result.permissions.toString());
-	            row.createCell(7).setCellValue(result.permittedUsers.toString());
-	            // Add more cells for other fields
-	        }
+
+	            // Access Entities
+	            if (result.accessEntities != null && !result.accessEntities.isEmpty()) {
+	                for (int i = 0; i < result.accessEntities.size(); i++) {
+	                    AccessEntity accessEntity = result.accessEntities.get(i);
+	                    row.createCell(5 + i * 2).setCellValue(accessEntity.getId()); // ID column
+	                    row.createCell(6 + i * 2).setCellValue(accessEntity.getSelf()); // Self column
+	                }
+	            }
+
+	            // Permissions
+	            if (result.permissions != null && !result.permissions.isEmpty()) {
+	                for (int i = 0; i < result.permissions.size(); i++) {
+	                    Permission permission = result.permissions.get(i);
+	                    row.createCell(5 + i).setCellValue(permission.getKey()); // Key column
+	                }
+	            }
+
+	            // Permitted Users
+	            if (result.permittedUsers != null && !result.permittedUsers.isEmpty()) {
+	                for (int i = 0; i < result.permittedUsers.size(); i++) {
+	                    PermittedUser permittedUser = result.permittedUsers.get(i);
+	                    row.createCell(8 + i * 2).setCellValue(permittedUser.getAccountId()); // Account ID column
+	                    row.createCell(9 + i * 2).setCellValue(permittedUser.getSelf()); // Self column
+	                }
+	            }
+	        
+	        
+	        
+	        
+
+	        
 
 	        try (FileOutputStream fileOut = new FileOutputStream(outputFile)) {
 	            workbook.write(fileOut);
@@ -98,7 +130,7 @@ import java.io.FileOutputStream;
 	            }
 	        }
 	    }}
-	
+	}
 	
 	
 	

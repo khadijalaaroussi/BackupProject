@@ -67,7 +67,7 @@ public class TeamsService {
 
 	                    // Create header row
 	                    Row headerRow = sheet.createRow(0);
-	                    String[] headers = {"ID", "Name", "Summary", "Lead ","links","members","permissions","program","self","administrative"};
+	                    String[] headers = {"ID", "Name", "Summary", "Lead AccountId","Lead Self","links self","members self","permissions","program ID","program self","program name","self","administrative"};
 	                    for (int i = 0; i < headers.length; i++) {
 	                        Cell cell = headerRow.createCell(i);
 	                        cell.setCellValue(headers[i]);
@@ -81,19 +81,26 @@ public class TeamsService {
 	                        row.createCell(1).setCellValue(result.name);
 	                        row.createCell(2).setCellValue(result.summary);
 	                        if (result.lead != null) {
-	                            row.createCell(3).setCellValue(result.lead.toString());
+	                            row.createCell(3).setCellValue(result.lead.accountId);
+	                            row.createCell(4).setCellValue(result.lead.self);
 	                            
 	                        }
 	                        if(result.links != null) {
-	                        	row.createCell(4).setCellValue(result.links.toString());
+	                        	row.createCell(5).setCellValue(result.links.self);
 	                        	
 	                  	
 	                        }
 	                        if(result.members != null) {
-	                        row.createCell(5).setCellValue(result.members.toString());}
+	                        row.createCell(6).setCellValue(result.members.self);
+	                       
+	                        }
 	                        
 	                        if(result.program != null) {
-		                        row.createCell(6).setCellValue(result.program.toString());}
+		                        row.createCell(7).setCellValue(result.program.id);
+		                        row.createCell(8).setCellValue(result.program.self);
+		                        row.createCell(9).setCellValue(result.program.name);
+		                        
+	                        }
 	                        row.createCell(7).setCellValue(result.self);
 	                        row.createCell(8).setCellValue(result.administrative);
 	                        

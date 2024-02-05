@@ -13,6 +13,7 @@ tempo:
       url3: https://api.tempo.io/4/permission-roles
       url4: https://api.tempo.io/4/globalconfiguration
       url5: https://api.tempo.io/4/roles
-      token: 3uNYO2kgpQ8HBKwNVgt0BYP5jV0FtK-us
+      url6: https://api.tempo.io/4/timesheet-approvals/team/6
+      token: ZaCUo5AofirAiFE2ZRsCww2TcYgsnR-us
       cron: "0 26 11 * * *"
       path: C:\Backup_tempo

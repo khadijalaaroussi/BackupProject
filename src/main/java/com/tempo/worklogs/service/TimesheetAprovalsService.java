@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.*;
 	@Service
 	public class TimesheetAprovalsService {
 
-	    @Value("${tempo.api.url}")
+	    @Value("${tempo.api.url6}")
 	    private String TEMPO_API_URL;
 
 	    @Value("${tempo.api.token}")
